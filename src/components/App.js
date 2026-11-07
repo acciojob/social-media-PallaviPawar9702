@@ -54,7 +54,7 @@ const initialPosts = [
   }
 ];
 
-// Display all posts
+// Post List Component
 function PostList({ posts, addReaction }) {
   return (
     <section className="posts-list">
@@ -87,12 +87,15 @@ function PostList({ posts, addReaction }) {
               🚀 {post.reactions.rocket}
             </button>
 
-            <button onClick={() => {}}>
+            <button>
               👀 0
             </button>
           </div>
 
-          <Link className="button" to={`/posts/${post.id}`}>
+          <Link
+            to={`/posts/${post.id}`}
+            className="button"
+          >
             View Post
           </Link>
         </article>
@@ -101,7 +104,7 @@ function PostList({ posts, addReaction }) {
   );
 }
 
-// Home page
+// Home Component
 function Home({ posts, setPosts, addReaction }) {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -192,7 +195,7 @@ function Home({ posts, setPosts, addReaction }) {
   );
 }
 
-// Users page
+// Users Component
 function UsersPage() {
   return (
     <div>
@@ -211,7 +214,7 @@ function UsersPage() {
   );
 }
 
-// Individual user's posts
+// User Posts Component
 function UserPosts({ posts, addReaction }) {
   const { userId } = useParams();
 
@@ -235,7 +238,7 @@ function UserPosts({ posts, addReaction }) {
   );
 }
 
-// Notifications page
+// Notifications Component
 function Notifications() {
   const [notifications, setNotifications] = useState([]);
 
@@ -269,7 +272,7 @@ function Notifications() {
   );
 }
 
-// Post details and edit page
+// Post Details and Edit Component
 function PostDetails({ posts, setPosts }) {
   const { postId } = useParams();
 
@@ -350,7 +353,7 @@ function PostDetails({ posts, setPosts }) {
   );
 }
 
-// Main application
+// Main App Component
 function AppContent() {
   const [posts, setPosts] = useState(initialPosts);
 
