@@ -1,9 +1,15 @@
 
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, Link, useParams, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  useParams
+} from "react-router-dom";
 import "./../styles/App.css";
 
-const initialUsers = [
+const users = [
   { id: 1, name: "John Doe" },
   { id: 2, name: "Jane Smith" },
   { id: 3, name: "Alex Johnson" }
@@ -13,43 +19,100 @@ const initialPosts = [
   {
     id: 1,
     title: "Welcome to GenZ!",
-    content: "This is my first post. Welcome everyone!",
+    content: "Welcome everyone to our social media platform.",
     userId: 1,
-    reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0 }
+    reactions: {
+      thumbsUp: 0,
+      hooray: 0,
+      heart: 0,
+      rocket: 0
+    }
   },
   {
     id: 2,
     title: "Learning React",
-    content: "React makes building user interfaces easier.",
+    content: "React makes building interfaces easier.",
     userId: 2,
-    reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0 }
+    reactions: {
+      thumbsUp: 0,
+      hooray: 0,
+      heart: 0,
+      rocket: 0
+    }
   },
   {
     id: 3,
     title: "Hello World",
-    content: "Excited to share my thoughts here!",
+    content: "Excited to share my thoughts!",
     userId: 3,
-    reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0 }
+    reactions: {
+      thumbsUp: 0,
+      hooray: 0,
+      heart: 0,
+      rocket: 0
+    }
   }
 ];
 
-const AppContent = () => {
-  const [users] = useState(initialUsers);
-  const [posts, setPosts] = useState(initialPosts);
-  const [notifications, setNotifications] = useState([]);
+// Display all posts
+function PostList({ posts, addReaction }) {
+  return (
+    <section className="posts-list">
+      <h2>Recent Posts</h2>
 
+      {posts.map((post) => (
+        <article key={post.id} className="post-card">
+          <h3>{post.title}</h3>
+
+          <p>{post.content}</p>
+
+          <p className="author">
+            By: {users.find((u) => u.id === post.userId)?.name}
+          </p>
+
+          <div className="reactions">
+            <button onClick={() => addReaction(post.id, "thumbsUp")}>
+              👍 {post.reactions.thumbsUp}
+            </button>
+
+            <button onClick={() => addReaction(post.id, "hooray")}>
+              🎉 {post.reactions.hooray}
+            </button>
+
+            <button onClick={() => addReaction(post.id, "heart")}>
+              ❤️ {post.reactions.heart}
+            </button>
+
+            <button onClick={() => addReaction(post.id, "rocket")}>
+              🚀 {post.reactions.rocket}
+            </button>
+
+            <button onClick={() => {}}>
+              👀 0
+            </button>
+          </div>
+
+          <Link className="button" to={`/posts/${post.id}`}>
+            View Post
+          </Link>
+        </article>
+      ))}
+    </section>
+  );
+}
+
+// Home page
+function Home({ posts, setPosts, addReaction }) {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
 
-  const [activeTab, setActiveTab] = useState("Posts");
-
-  const navigate = useNavigate();
-
   const addPost = (e) => {
     e.preventDefault();
 
-    if (!title.trim() || !author || !content.trim()) return;
+    if (!title.trim() || !author || !content.trim()) {
+      return;
+    }
 
     const newPost = {
       id: Date.now(),
@@ -64,88 +127,22 @@ const AppContent = () => {
       }
     };
 
-    setPosts([newPost, ...posts]);
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
 
     setTitle("");
     setAuthor("");
     setContent("");
   };
 
-  const addReaction = (postId, reaction) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === postId
-          ? {
-              ...post,
-              reactions: {
-                ...post.reactions,
-                [reaction]: post.reactions[reaction] + 1
-              }
-            }
-          : post
-      )
-    );
-  };
-
-  const refreshNotifications = () => {
-    setNotifications([
-      { id: 1, message: "Welcome to GenZ! Start sharing your thoughts." },
-      { id: 2, message: "A new post has been added to the community." },
-      { id: 3, message: "Check out the latest posts from your users." }
-    ]);
-  };
-
-  const PostList = ({ displayedPosts }) => (
-    <section className="posts-list">
-      <h2>Recent Posts</h2>
-
-      {displayedPosts.map((post) => {
-        const user = users.find((u) => u.id === post.userId);
-
-        return (
-          <article key={post.id} className="post-card">
-            <h3>{post.title}</h3>
-            <p>{post.content}</p>
-            <p className="author">By: {user?.name}</p>
-
-            <div className="reactions">
-              <button onClick={() => addReaction(post.id, "thumbsUp")}>
-                👍 {post.reactions.thumbsUp}
-              </button>
-
-              <button onClick={() => addReaction(post.id, "hooray")}>
-                🎉 {post.reactions.hooray}
-              </button>
-
-              <button onClick={() => addReaction(post.id, "heart")}>
-                ❤️ {post.reactions.heart}
-              </button>
-
-              <button onClick={() => addReaction(post.id, "rocket")}>
-                🚀 {post.reactions.rocket}
-              </button>
-
-              <button disabled>👀 0</button>
-            </div>
-
-            <Link className="button" to={`/posts/${post.id}`}>
-              View Post
-            </Link>
-          </article>
-        );
-      })}
-    </section>
-  );
-
-  const Home = () => (
+  return (
     <>
       <h1>GenZ</h1>
 
       <nav className="tabs">
-        <Link to="/" onClick={() => setActiveTab("Posts")}>Posts</Link>
-        <Link to="/users" onClick={() => setActiveTab("Users")}>Users</Link>
-        <Link to="/notifications" onClick={() => setActiveTab("Notifications")}>Notifications</Link>
-        <a href="#create-post" onClick={() => setActiveTab("Create Post")}>Create Post</a>
+        <Link to="/">Posts</Link>
+        <Link to="/users">Users</Link>
+        <Link to="/notifications">Notifications</Link>
+        <a href="#create-post">Create Post</a>
       </nav>
 
       <section className="create-post" id="create-post">
@@ -168,6 +165,7 @@ const AppContent = () => {
             required
           >
             <option value="">Select Author</option>
+
             {users.map((user) => (
               <option key={user.id} value={user.id}>
                 {user.name}
@@ -177,7 +175,7 @@ const AppContent = () => {
 
           <textarea
             id="postContent"
-            placeholder="What's on your mind?"
+            placeholder="Enter post content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
@@ -189,44 +187,74 @@ const AppContent = () => {
         </form>
       </section>
 
-      <PostList displayedPosts={posts} />
+      <PostList posts={posts} addReaction={addReaction} />
     </>
   );
+}
 
-  const Users = () => (
-    <div className="users-page">
+// Users page
+function UsersPage() {
+  return (
+    <div>
       <h1>Users</h1>
 
       <ul>
         {users.map((user) => (
           <li key={user.id}>
-            <Link to={`/users/${user.id}`}>{user.name}</Link>
+            <Link to={`/users/${user.id}`}>
+              {user.name}
+            </Link>
           </li>
         ))}
       </ul>
     </div>
   );
+}
 
-  const UserPosts = () => {
-    const { userId } = useParams();
-    const user = users.find((u) => u.id === Number(userId));
-    const userPosts = posts.filter(
-      (post) => post.userId === Number(userId)
-    );
+// Individual user's posts
+function UserPosts({ posts, addReaction }) {
+  const { userId } = useParams();
 
-    return (
-      <div>
-        <h1>{user?.name}'s Posts</h1>
-        <PostList displayedPosts={userPosts} />
-      </div>
-    );
+  const user = users.find(
+    (u) => u.id === Number(userId)
+  );
+
+  const filteredPosts = posts.filter(
+    (post) => post.userId === Number(userId)
+  );
+
+  return (
+    <div>
+      <h1>{user?.name}'s Posts</h1>
+
+      <PostList
+        posts={filteredPosts}
+        addReaction={addReaction}
+      />
+    </div>
+  );
+}
+
+// Notifications page
+function Notifications() {
+  const [notifications, setNotifications] = useState([]);
+
+  const refreshNotifications = () => {
+    setNotifications([
+      { id: 1, message: "New post added successfully!" },
+      { id: 2, message: "Welcome to GenZ!" },
+      { id: 3, message: "Check out the latest posts!" }
+    ]);
   };
 
-  const Notifications = () => (
-    <div className="notifications-page">
+  return (
+    <div>
       <h1>Notifications</h1>
 
-      <button className="button" onClick={refreshNotifications}>
+      <button
+        className="button"
+        onClick={refreshNotifications}
+      >
         Refresh Notifications
       </button>
 
@@ -239,91 +267,161 @@ const AppContent = () => {
       </section>
     </div>
   );
+}
 
-  const PostDetails = () => {
-    const { postId } = useParams();
-    const post = posts.find((p) => p.id === Number(postId));
+// Post details and edit page
+function PostDetails({ posts, setPosts }) {
+  const { postId } = useParams();
 
-    const [isEditing, setIsEditing] = useState(false);
-    const [editTitle, setEditTitle] = useState(post?.title || "");
-    const [editContent, setEditContent] = useState(post?.content || "");
+  const post = posts.find(
+    (p) => p.id === Number(postId)
+  );
 
-    if (!post) {
-      return <h2>Post not found</h2>;
-    }
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
 
-    const savePost = (e) => {
-      e.preventDefault();
+  if (!post) {
+    return <h2>Post not found</h2>;
+  }
 
-      setPosts((prevPosts) =>
-        prevPosts.map((p) =>
-          p.id === post.id
-            ? { ...p, title: editTitle, content: editContent }
-            : p
-        )
-      );
+  const handleEdit = () => {
+    setEditTitle(post.title);
+    setEditContent(post.content);
+    setIsEditing(true);
+  };
 
-      setIsEditing(false);
-    };
+  const savePost = (e) => {
+    e.preventDefault();
 
-    return (
-      <div className="post">
-        {isEditing ? (
-          <form onSubmit={savePost}>
-            <input
-              id="postTitle"
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-              required
-            />
+    setPosts((prevPosts) =>
+      prevPosts.map((p) =>
+        p.id === Number(postId)
+          ? {
+              ...p,
+              title: editTitle,
+              content: editContent
+            }
+          : p
+      )
+    );
 
-            <textarea
-              id="postContent"
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              required
-            />
+    setIsEditing(false);
+  };
 
-            <button type="submit" className="button">
-              Save Changes
-            </button>
-          </form>
-        ) : (
-          <>
-            <h2>{post.title}</h2>
-            <p>{post.content}</p>
+  return (
+    <div className="post">
+      {isEditing ? (
+        <form onSubmit={savePost}>
+          <input
+            type="text"
+            id="postTitle"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            required
+          />
 
-            <button
-              className="button"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit
-            </button>
-          </>
-        )}
-      </div>
+          <textarea
+            id="postContent"
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+            required
+          />
+
+          <button type="submit" className="button">
+            Save Changes
+          </button>
+        </form>
+      ) : (
+        <>
+          <h2>{post.title}</h2>
+
+          <p>{post.content}</p>
+
+          <button
+            className="button"
+            onClick={handleEdit}
+          >
+            Edit
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Main application
+function AppContent() {
+  const [posts, setPosts] = useState(initialPosts);
+
+  const addReaction = (postId, reaction) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              reactions: {
+                ...post.reactions,
+                [reaction]: post.reactions[reaction] + 1
+              }
+            }
+          : post
+      )
     );
   };
 
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/:userId" element={<UserPosts />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/posts/:postId" element={<PostDetails />} />
+        <Route
+          path="/"
+          element={
+            <Home
+              posts={posts}
+              setPosts={setPosts}
+              addReaction={addReaction}
+            />
+          }
+        />
+
+        <Route
+          path="/users"
+          element={<UsersPage />}
+        />
+
+        <Route
+          path="/users/:userId"
+          element={
+            <UserPosts
+              posts={posts}
+              addReaction={addReaction}
+            />
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={<Notifications />}
+        />
+
+        <Route
+          path="/posts/:postId"
+          element={
+            <PostDetails
+              posts={posts}
+              setPosts={setPosts}
+            />
+          }
+        />
       </Routes>
     </div>
   );
-};
+}
 
-const App = () => {
+export default function App() {
   return (
     <BrowserRouter>
       <AppContent />
     </BrowserRouter>
   );
-};
-
-export default App;
+}
