@@ -1,1 +1,106 @@
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f5f9;
+  color: #222;
+}
+
+.App {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 25px;
+  background: white;
+  border-radius: 10px;
+}
+
+h1 {
+  color: #5145cd;
+}
+
+.tabs {
+  display: flex;
+  gap: 25px;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 25px;
+}
+
+a {
+  color: #5145cd;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.create-post,
+.post,
+.post-card,
+.notificationsList > div {
+  background: #f8f8fc;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+input,
+select,
+textarea {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.button,
+.reactions button {
+  display: inline-block;
+  padding: 10px 16px;
+  margin: 8px 5px 8px 0;
+  border: none;
+  border-radius: 5px;
+  background: #5145cd;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.button:hover,
+.reactions button:hover {
+  background: #372da5;
+}
+
+.reactions {
+  margin: 12px 0;
+}
+
+.author {
+  color: #777;
+  font-size: 14px;
+}
+
+.users-page li {
+  padding: 12px;
+}
+
+.notificationsList {
+  margin-top: 20px;
+}
+
